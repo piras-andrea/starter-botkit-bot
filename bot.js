@@ -49,6 +49,17 @@ fs.readdirSync(normalizedPath).forEach(file => {
 // You can tie into the execution of the script using the functions
 // controller.studio.before, controller.studio.after and controller.studio.validate
 if (STUDIO_TOKEN) {
+  controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'robot_face',
+    }, function(err, res) {
+        if (err) {
+            bot.botkit.log('Failed to add emoji reaction :(', err);
+        }
+    });
+  });
   controller.on('direct_message,direct_mention,mention', (bot, message) => {
     controller.studio.runTrigger(bot, message.text, message.user, message.channel).then(convo => {
       if (!convo) {
